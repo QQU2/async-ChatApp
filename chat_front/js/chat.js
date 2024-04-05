@@ -51,7 +51,6 @@ document.addEventListener("keydown", (e) => {
 //메세지 보내기
 function sendMsg() {
     let inputMsg = document.querySelector("#chat-outgoing-msg");
-    //let createdTime = new Date().toTimeString().split(' ')[0].slice(0, -3);
 
     chatBox.appendChild(setMsg(inputMsg.value, setTimeFormat(), "send"));
     inputMsg.value = "";
@@ -99,6 +98,8 @@ function setConversations(msg, time, msgType) {
 //메세지 생성시간 format 설정
 function setTimeFormat(history) {
     let time = new Date(history.createdAt).toTimeString().split(' ')[0].slice(0, -3);
-    let date = new Date(history.createdAt).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '-');
+    let date = new Date(history.createdAt).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '.');
+
+    console.log(date);
     return " " + time + " | " + date;
 }
