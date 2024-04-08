@@ -49,8 +49,28 @@ document.addEventListener("keydown", (e) => {
 
 /******** 함수 구현 *********/
 //메세지 보내기
-function sendMsg() {
+async function sendMsg() {
     let inputMsg = document.querySelector("#chat-outgoing-msg");
+
+    let chat = {
+        send: "dayeon",
+        receiver: "songmin",
+        msg: inputMsg.value
+    };
+
+    //ChatController의 Mono<chat> setMsg 을 호출하고 오브젝트를 반환받음
+    //하지만 함수를 순서대로 호출하는 와중에 통신이 완벽히 끝나지 않은 상태에서(데이터서버의 통신결과를 기다려주지 않음)
+    //object를 받으면 null값이 날라옴
+    //데이터서버의 응답을 받고 돌아올 때까지 기다리기 위해 fetch 함수 앞에 'await'를 붙여줌
+    //또한 await 하나때문에 다른 동작이 block 되므로 fetch를 갖고 있는 function은 비동기식 함수'async function'으로 바꿔줘야함
+    let response = await fetch("http://localhost:8080/chat", {
+        method: "post",
+        body: JSON.stringify(chat),
+        headers: {
+            "Content-Type": "application/json; charset=utf-8"   //MIME 타입
+        }
+    });
+    console.log(response);
 
     chatBox.appendChild(setMsg(inputMsg.value, setTimeFormat(), "send"));
     inputMsg.value = "";
@@ -97,8 +117,8 @@ function setConversations(msg, time, msgType) {
 
 //메세지 생성시간 format 설정
 function setTimeFormat(history) {
-    let time = new Date(history.createdAt).toTimeString().split(' ')[0].slice(0, -3);
-    let date = new Date(history.createdAt).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '.');
+    let time = new Date(history == null ? null : history.createdAt).toTimeString().split(' ')[0].slice(0, -3);
+    let date = new Date(history == null ? null : history.createdAt).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '.');
 
     console.log(date);
     return " " + time + " | " + date;
