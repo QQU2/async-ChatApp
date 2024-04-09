@@ -63,14 +63,20 @@ async function sendMsg() {
     //object를 받으면 null값이 날라옴
     //데이터서버의 응답을 받고 돌아올 때까지 기다리기 위해 fetch 함수 앞에 'await'를 붙여줌
     //또한 await 하나때문에 다른 동작이 block 되므로 fetch를 갖고 있는 function은 비동기식 함수'async function'으로 바꿔줘야함
-    let response = await fetch("http://localhost:8080/chat", {
-        method: "post",
-        body: JSON.stringify(chat),
-        headers: {
-            "Content-Type": "application/json; charset=utf-8"   //MIME 타입
+    let response = await fetch("http://localhost:8080/chat"
+        , {
+            method: "post",
+            body: JSON.stringify(chat),
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"   //MIME 타입
+            }
         }
-    });
+    );
     console.log(response);
+
+    //await 객체.json()을 해주지 않으면 pending 중이라고 뜬다.
+    let parseResponse = await response.json();
+    console.log(parseResponse);
 
     chatBox.appendChild(setMsg(inputMsg.value, setTimeFormat(), "send"));
     inputMsg.value = "";
