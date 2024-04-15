@@ -123,9 +123,11 @@ function setConversations(msg, time, msgType) {
 
 //메세지 생성시간 format 설정
 function setTimeFormat(history) {
-    let time = new Date(history == null ? null : history.createdAt).toTimeString().split(' ')[0].slice(0, -3);
-    let date = new Date(history == null ? null : history.createdAt).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '.');
+    let dateObject = history == null ? new Date() : new Date(history.createdAt);
 
-    console.log(date);
+    let time = dateObject.toTimeString().split(' ')[0].slice(0, -3);
+    let date = dateObject.toLocaleDateString().replace(/\./g, '').replace(/\s/g, '.');
+
+    //console.log(date);
     return " " + time + " | " + date;
 }
