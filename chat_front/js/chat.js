@@ -10,19 +10,12 @@ const es1 = new EventSource(`http://localhost:8080/chat/roomNum/${roomNum}`);
 // const es2 = new EventSource('http://localhost:8080/sender/songmin/receiver/dayeon');
 es1.onmessage = (e) => {
     let data = JSON.parse(e.data);
+    
+    let msg       = data.msg;
     let createdAt = setTimeFormat(data);
-    let msg = data.msg;
+    let action    = (data.sender === usrNm) ? "send" : "receive";
 
-    if (data.sender === usrNm) {
-        //보내는 파란색 말풍선
-        chatBox.appendChild(setMsg(msg, createdAt, "send"));
-    } else {
-        //받는 회색 말풍선
-        chatBox.appendChild(setMsg(msg, createdAt, "receive"));
-
-    }
-
-
+    chatBox.appendChild(setMsg(msg, createdAt, action));
 }
 
 
@@ -97,11 +90,9 @@ function setMsg(message, sendTime, msgType) {
 
 //메세지 생성시간 format 설정
 function setTimeFormat(history) {
-    let dateObject = history == null ? new Date() : new Date(history.createdAt);
 
-    let time = dateObject.toTimeString().split(' ')[0].slice(0, -3);
-    let date = dateObject.toLocaleDateString().replace(/\./g, '').replace(/\s/g, '.');
+    let time = new Date(history.createdAt).toTimeString().split(' ')[0].slice(0, -3);
+    let date = new Date(history.createdAt).toLocaleDateString().replace(/\./g, '').replace(/\s/g, '.');
 
-    //console.log(date);
     return " " + time + " | " + date;
 }
